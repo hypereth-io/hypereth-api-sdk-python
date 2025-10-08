@@ -1,0 +1,147 @@
+Metadata-Version: 2.1
+Name: hypereth-sdk
+Version: 0.1.0
+Summary: Python SDK for HyperETH
+Home-page: https://github.com/hypereth-io/hypereth-api-sdk-python
+Author: HyperETH
+Author-email: hello@hypereth.io
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+Classifier: Topic :: Security :: Cryptography
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Provides-Extra: test
+
+# HyperETH Python SDK
+
+Python SDK for interacting with the HyperETH API, providing seamless integration with HyperLiquid's trading infrastructure plus HyperETH specific trading methods.
+
+## Prerequisites
+
+- Python 3.8+
+
+## Installation
+
+```bash
+git clone https://github.com/hypereth-io/hypereth-api-sdk-python
+pip install -e .
+```
+
+## Getting Started
+
+The HyperETH SDK provides comprehensive examples that walk you through the complete trading setup and usage workflow. Follow these examples in order:
+
+### 1. Approve Builder Fee (Required First Step)
+
+Before you can register API keys or start trading, you must approve the builder fee:
+
+```bash
+python examples/approve_builder_fee.py
+```
+
+**What it does:**
+- Approves the HyperETH builder fee (25bp) for your wallet
+- Required for all subsequent API operations
+- One-time setup per wallet
+
+**Requirements:** Main wallet private key
+
+### 2. Register API Key
+
+Once builder fee is approved, register your API key:
+
+```bash
+python examples/api_key_register.py
+```
+
+**What it does:**
+- Creates a new API key for your wallet
+- Signs the registration using EIP-191 message signing
+- Returns your new API key for authentication
+
+**Requirements:** Main wallet private key (same as step 1)
+
+### 3. Manage API Keys
+
+List and manage your registered API keys:
+
+```bash
+# List all your API keys
+python examples/api_key_list.py
+
+# Delete a specific API key
+python examples/api_key_delete.py
+```
+
+### 4. Test Market Data Access
+
+Test your API key with market data queries:
+
+```bash
+python examples/info_api_demo.py
+```
+
+**What it does:**
+- Retrieves market data via REST API
+- Tests WebSocket subscriptions
+- Show how to retrieve real-time price feeds and order book data
+
+**Requirements:** API key (from step 2)
+
+### 5. Exchange Trading
+
+With a working API key, you can start trading:
+
+#### REST API Trading
+```bash
+python examples/exchange_api_rest_demo.py
+```
+
+#### WebSocket Trading  
+```bash
+python examples/exchange_api_ws_demo.py
+```
+
+**What they do:**
+- Set up trading wallets (agent wallet)
+- Place and cancel orders
+
+**Requirements:** 
+- API key (from step 2)
+- Private key for signing transactions
+- Sufficient balance for trading
+
+### 6. Complete Workflow
+
+For a comprehensive end-to-end demonstration:
+
+```bash
+python examples/full_workflow_demo.py
+```
+
+**What it does:**
+- Combines all steps above in a single workflow
+- Shows the complete journey from setup to trading
+
+## Environment Variables
+
+You can set these environment variables to avoid repeated input:
+
+```bash
+export PRIVATE_KEY="your_private_key_here"
+# Only for exchange and info demo.
+export HYPERETH_API_KEY="your_api_key_here"
+```
+
