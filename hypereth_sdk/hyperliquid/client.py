@@ -562,6 +562,7 @@ class HyperLiquidClient:
         """
         Approve agent wallet for trading using the main user wallet.
         Must be called before placing orders.
+        This method uses Hyperliquid endpoints directly.
         """
         if not self.user_wallet:
             raise ValidationError("User wallet not set. Call set_user_wallet() first.")
@@ -589,7 +590,7 @@ class HyperLiquidClient:
                 "expiresAfter": None
             }
 
-            result = await self._post_exchange_request(payload)
+            result = await self._post_exchange_request_direct(payload)
 
             if result.get("status") == "ok":
                 return True
@@ -869,3 +870,35 @@ class HyperLiquidClient:
             return response
         except Exception as e:
             raise APIError(f"Exchange request failed: {e}")
+
+    async def _post_exchange_request_direct(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Internal method to send POST request directly to HyperLiquid /exchange endpoint.
+        This bypasses the HyperETH proxy and goes directly to Hyperliquid.
+
+        Args:
+            payload: Request payload
+
+        Returns:
+            Response data
+        """
+        import aiohttp
+
+        try:
+            # Determine the correct Hyperliquid endpoint
+            if self.environment == "testnet":
+                hl_endpoint = "https://api.hyperliquid-testnet.xyz/exchange"
+            else:
+                hl_endpoint = "https://api.hyperliquid.xyz/exchange"
+
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    hl_endpoint,
+                    json=payload,
+                    timeout=aiohttp.ClientTimeout(total=self.timeout)
+                ) as response:
+                    response.raise_for_status()
+                    return await response.json()
+
+        except Exception as e:
+            raise APIError(f"Direct exchange request failed: {e}")
